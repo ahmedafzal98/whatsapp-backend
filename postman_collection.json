@@ -1,0 +1,78 @@
+{
+  "info": {
+    "name": "WhatsApp Backend API",
+    "description": "Collection of endpoints for WhatsApp automation API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Check Status",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/status",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["status"]
+        },
+        "description": "Check if the WhatsApp client is ready"
+      }
+    },
+    {
+      "name": "Get All Groups",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/groups",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["groups"]
+        },
+        "description": "Get a list of all WhatsApp groups"
+      }
+    },
+    {
+      "name": "Send Message to Group",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"groupId\": \"120363123456789012@g.us\",\n  \"message\": \"Hello from Postman! 🚀\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/send-to-group",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["send-to-group"]
+        },
+        "description": "Send a message to a WhatsApp group. Replace groupId with your actual group ID."
+      }
+    },
+    {
+      "name": "Logout WhatsApp",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/logout",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["logout"]
+        },
+        "description": "Logout and destroy the WhatsApp session"
+      }
+    }
+  ]
+}
