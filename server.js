@@ -212,27 +212,43 @@ app.post('/logout', async (req, res) => {
 
         console.log('🔴 Logging out WhatsApp client...');
         
-        // Logout and destroy the session
-        await client.logout();
-        await client.destroy();
-        
-        // Reset state
+        // Reset state first
         isClientReady = false;
         qrCodeData = null;
         
-        console.log('✅ Successfully logged out!');
+        // Try to logout gracefully, but don't fail if it errors
+        try {
+            await client.logout();
+        } catch (logoutError) {
+            console.warn('⚠️ Logout warning (non-critical):', logoutError.message);
+        }
+        
+        // Destroy the client
+        try {
+            await client.destroy();
+        } catch (destroyError) {
+            console.warn('⚠️ Destroy warning (non-critical):', destroyError.message);
+        }
+        
+        console.log('✅ Successfully logged out! Restart the server to reconnect.');
         
         res.json({
             success: true,
             message: 'Logged out successfully. Session data has been cleared.',
-            note: 'You will need to scan QR code again to reconnect. Restart the server to reinitialize.'
+            note: 'Restart the server and visit /qr to scan QR code again.'
         });
 
     } catch (error) {
-        console.error('Error during logout:', error);
+        console.error('❌ Error during logout:', error);
+        
+        // Even if there's an error, reset the state
+        isClientReady = false;
+        qrCodeData = null;
+        
         res.status(500).json({
-            error: 'Failed to logout',
-            details: error.message
+            error: 'Failed to logout cleanly, but session has been cleared',
+            details: error.message,
+            action: 'Please restart the server to fully reset'
         });
     }
 });
