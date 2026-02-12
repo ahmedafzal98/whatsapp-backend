@@ -2,6 +2,15 @@
 
 A Node.js + Express backend API that automates WhatsApp messaging using [whatsapp-web.js](https://github.com/pedroslopez/whatsapp-web.js). Send messages to WhatsApp Groups programmatically through REST API endpoints.
 
+## 🌐 Live Deployment
+
+**API Base URL:** `https://whatsapp-backend-74sa.onrender.com`
+
+**Quick Links:**
+- 📡 [API Status](https://whatsapp-backend-74sa.onrender.com/status) - Check if API is ready
+- 🔐 [Authenticate](https://whatsapp-backend-74sa.onrender.com/qr) - Scan QR code to connect
+- 📚 [Complete API Guide](./API_GUIDE.md) - Full documentation for developers
+
 ## ⚠️ Disclaimer
 
 This project uses an **unofficial** WhatsApp library. Use at your own risk. WhatsApp may ban accounts that use unofficial clients.
@@ -28,7 +37,7 @@ This project uses an **unofficial** WhatsApp library. Use at your own risk. What
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/whatsapp-backend.git
+git clone https://github.com/ahmedafzal98/whatsapp-backend.git
 cd whatsapp-backend
 
 # Install dependencies
@@ -227,7 +236,7 @@ sudo apt-get install -y \
   libgtk-3-0
 
 # Clone and setup
-git clone https://github.com/YOUR_USERNAME/whatsapp-backend.git
+git clone https://github.com/ahmedafzal98/whatsapp-backend.git
 cd whatsapp-backend
 npm install
 

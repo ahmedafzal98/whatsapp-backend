@@ -24,7 +24,16 @@ const client = new Client({
     }),
     puppeteer: {
         headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-accelerated-2d-canvas',
+            '--no-first-run',
+            '--no-zygote',
+            '--single-process',
+            '--disable-gpu'
+        ]
     }
 });
 
@@ -34,9 +43,10 @@ let isClientReady = false;
 
 // QR Code event - scan this with your phone
 client.on('qr', async (qr) => {
-    console.log('QR Code received! Scan it with your phone.');
+    console.log('📱 QR Code received! Scan it with your phone.');
     qrCodeData = await qrcode.toDataURL(qr);
-    console.log('QR Code available at: http://localhost:3000/qr');
+    const PORT = process.env.PORT || 3000;
+    console.log(`🔗 QR Code available at: http://localhost:${PORT}/qr`);
 });
 
 // Client ready event
@@ -56,12 +66,43 @@ client.on('disconnected', (reason) => {
     isClientReady = false;
 });
 
-// Initialize the client
-client.initialize();
+// Handle authentication failure
+client.on('auth_failure', (msg) => {
+    console.error('❌ Authentication failure:', msg);
+    isClientReady = false;
+});
+
+// Handle loading screen
+client.on('loading_screen', (percent, message) => {
+    console.log(`⏳ Loading... ${percent}% - ${message}`);
+});
+
+// Initialize the client with error handling
+console.log('🔄 Initializing WhatsApp client...');
+client.initialize().catch(err => {
+    console.error('❌ Failed to initialize WhatsApp client:', err);
+});
 
 // =========================
 // API ENDPOINTS
 // =========================
+
+// GET / - Health check / Home
+app.get('/', (req, res) => {
+    res.json({
+        status: 'online',
+        service: 'WhatsApp Backend API',
+        version: '1.0.0',
+        endpoints: {
+            status: '/status',
+            qr: '/qr',
+            groups: '/groups',
+            sendToGroup: '/send-to-group',
+            logout: '/logout'
+        },
+        documentation: 'https://github.com/ahmedafzal98/whatsapp-backend'
+    });
+});
 
 // GET /qr - Display QR code for initial authentication
 app.get('/qr', (req, res) => {
@@ -198,7 +239,11 @@ app.post('/logout', async (req, res) => {
 
 // Start the server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
-    console.log(`📱 Scan QR at http://localhost:${PORT}/qr`);
+const HOST = '0.0.0.0'; // Bind to all interfaces for Docker/Render
+
+app.listen(PORT, HOST, () => {
+    console.log(`🚀 Server running on http://${HOST}:${PORT}`);
+    console.log(`📱 Scan QR at: http://localhost:${PORT}/qr`);
+    console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`✅ Server started successfully!`);
 });
